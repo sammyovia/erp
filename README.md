@@ -1,4 +1,4 @@
-# E3OS Platform - Candidate Compliance Module
+# Erp Platform - Candidate Compliance Module
 
 ## Overview
 
