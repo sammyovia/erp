@@ -49,17 +49,17 @@ class AuditLog(models.Model):
             models.Index(fields=['actor_id']),
             models.Index(fields=['tenant', 'action']),
         ]
-        # Ensure immutability - no updates or deletes
-        # This is enforced at the database level and application level
     
     def __str__(self):
         return f"Audit {self.action} - {self.record_type} - {self.record_id} at {self.created_at}"
     
     def save(self, *args, **kwargs):
-        """Override save to enforce immutability"""
-        if self.pk:
+        """Override save to enforce immutability - allow creation, prevent updates"""
+        # Check if this is an existing record being updated
+        if self.pk and not kwargs.get('force_insert', False):
             # If updating, raise an error to prevent changes
             raise ValueError("Audit logs are immutable and cannot be updated")
+        # If it's a new record, allow creation
         super().save(*args, **kwargs)
     
     def delete(self, *args, **kwargs):

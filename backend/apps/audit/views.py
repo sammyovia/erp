@@ -1,10 +1,10 @@
 from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
-from django.db.models import Count, Q
+from django.db.models import Count
 from django.utils import timezone
-from rest_framework.views import APIView
 from datetime import timedelta
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import AuditLog
@@ -125,6 +125,7 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
         
         # Count by day (last 30 days)
         thirty_days_ago = timezone.now() - timedelta(days=30)
+        from django.db import connection
         daily_counts = queryset.filter(
             created_at__gte=thirty_days_ago
         ).extra(

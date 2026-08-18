@@ -22,6 +22,8 @@ class AuditLogSerializer(serializers.ModelSerializer):
             'after_hash',
             'data',
             'previous_version',
+            'ip_address',
+            'user_agent',
             'created_at'
         ]
         read_only_fields = ['id', 'created_at']
@@ -30,11 +32,14 @@ class AuditLogListSerializer(serializers.ModelSerializer):
     """Simplified serializer for list view"""
     
     action_display = serializers.CharField(source='get_action_display', read_only=True)
+    tenant_name = serializers.CharField(source='tenant.name', read_only=True)
     
     class Meta:
         model = AuditLog
         fields = [
             'id',
+            'tenant',
+            'tenant_name',
             'action',
             'action_display',
             'record_type',
@@ -47,8 +52,8 @@ class AuditStatsSerializer(serializers.Serializer):
     """Serializer for audit statistics"""
     
     total_logs = serializers.IntegerField()
-    action_breakdown = serializers.DictField()
-    record_type_breakdown = serializers.DictField()
+    action_breakdown = serializers.ListField()
+    record_type_breakdown = serializers.ListField()
     daily_breakdown = serializers.ListField()
     most_active_users = serializers.ListField()
     period = serializers.DictField()

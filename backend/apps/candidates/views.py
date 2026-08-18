@@ -41,24 +41,39 @@ class CandidateViewSet(viewsets.ModelViewSet):
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         """Create a new candidate with audit trail"""
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        candidate = serializer.save(tenant_id=request.tenant_id)
-        
-        # Audit trail
-        AuditService.log_create(
-            tenant_id=request.tenant_id,
-            actor_id=request.user.id,
-            record_type='candidate',
-            record_id=str(candidate.id),
-            data=serializer.validated_data
-        )
-        
-        return Response(
-            CandidateSerializer(candidate).data,
-            status=status.HTTP_201_CREATED
-        )
+        try:
+            # Get the serializer with the request data
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            
+            # Manually create the candidate with tenant_id from request
+            candidate = Candidate.objects.create(
+                tenant_id=request.tenant_id,  # Use tenant_id from request
+                name=serializer.validated_data['name'],
+                email=serializer.validated_data['email'],
+                role_applied_for=serializer.validated_data['role_applied_for']
+            )
+            
+            # Audit trail
+            AuditService.log_create(
+                tenant_id=request.tenant_id,
+                actor_id=request.user.id,
+                record_type='candidate',
+                record_id=str(candidate.id),
+                data=serializer.validated_data
+            )
+            
+            # Return the full candidate data
+            return Response(
+                CandidateSerializer(candidate).data,
+                status=status.HTTP_201_CREATED
+            )
+        except Exception as e:
+            print(f"Error creating candidate: {e}")
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
     
     @action(detail=True, methods=['post'])
     def add_document(self, request, pk=None):
