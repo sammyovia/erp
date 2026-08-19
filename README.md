@@ -1,3 +1,7 @@
+<img width="1366" height="641" alt="ScreenShot Tool -20260818135842" src="https://github.com/user-attachments/assets/fc194d68-4f61-45d0-bc2f-f9d7596d1b31" />
+ <img width="1366" height="641" alt="ScreenShot Tool -20260818125953" src="https://github.com/user-attachments/assets/918e4fb2-ef60-476c-8d7f-4c1c49322ca0" />
+<img width="1366" height="641" alt="ScreenShot Tool -20260818144302" src="https://github.com/user-attachments/assets/75efe8dc-b738-4b80-b02c-67231bf2438e" />
+
 # Erp Platform - Candidate Compliance Module
 
 ## Overview
